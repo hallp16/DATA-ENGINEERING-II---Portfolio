@@ -4,7 +4,7 @@ A containerized, resilient, and scalable batch data engineering pipeline built w
 
 ---
 
-## 🏗 Architecture Overview
+##  Architecture Overview
 
 The system follows a modern **ELT (Extract, Load, Transform)** and **Medallion Architecture** deployed as isolated microservices via Docker Compose:
 
@@ -24,7 +24,7 @@ The system follows a modern **ELT (Extract, Load, Transform)** and **Medallion A
 
 ---
 
-## 🛡️ Software Quality & Governance Highlights
+##  Software Quality & Governance Highlights
 
 - **Reliability:** Idempotent ingestion routines and Docker healthchecks prevent partial or inconsistent data states.
 - **Scalability:** The transformation logic is implemented in Apache Spark, enabling distributed horizontal scaling for multi-gigabyte datasets.
@@ -33,7 +33,7 @@ The system follows a modern **ELT (Extract, Load, Transform)** and **Medallion A
 
 ---
 
-## 🚀 Getting Started (Local Deployment)
+## 🚀Getting Started (Local Deployment)
 
 ### Prerequisites
 - [Docker Desktop](https://www.docker.com/) installed and running.
