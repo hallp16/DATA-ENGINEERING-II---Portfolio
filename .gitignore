@@ -1,0 +1,32 @@
+# ---------------------------------------------------------------------
+# Git Ignore Rules
+# Security, Large Files, and Local Environment Exclusion
+# ---------------------------------------------------------------------
+
+# 1. Security & Credentials:
+# NEVER commit raw passwords or database secrets to version control!
+.env
+
+# 2. Large Data Governance:
+# Raw CSV datasets exceed GitHub's 100MB file limit and belong in data lakes / storage
+data/*.csv
+
+# 3. Python Cache & Virtual Environments:
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# 4. Apache Spark & Ivy Cache files generated during driver downloads:
+.ivy2/
+spark-warehouse/
+*.jar
+
+# 5. IDE & OS configuration files:
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,77 @@
+# =====================================================================
+# Microservice Infrastructure Orchestration (Docker Compose)
+# Student Project: Brazilian Traffic Batch Data Pipeline
+# =====================================================================
+
+services:
+  # -------------------------------------------------------------------
+  # 1. Storage Layer (PostgreSQL Database)
+  # Acts as the central relational data warehouse (Bronze & Gold storage).
+  # -------------------------------------------------------------------
+  postgres_db:
+    image: postgres:14.12
+    container_name: traffic_postgres
+    restart: always
+    environment:
+      # Credentials loaded securely from the local .env file
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      # Expose port 5432 to localhost so we can inspect tables via DBeaver
+      - "5432:5432"
+    volumes:
+      # Named volume ensures data persists even if the container stops
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # Reliability check: tests every 5s if PostgreSQL is ready to accept queries
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------------------
+  # 2. Ingestion Layer (Python Batch Loader)
+  # Reads raw CSV data and loads it into PostgreSQL using chunking.
+  # -------------------------------------------------------------------
+  ingestion_service:
+    build:
+      context: ./ingestion
+      dockerfile: Dockerfile
+    container_name: traffic_ingestion
+    depends_on:
+      # Prevents race conditions: Python script starts ONLY after DB is truly healthy
+      postgres_db:
+        condition: service_healthy
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: postgres_db
+    volumes:
+      # Mount local data folder to make the CSV accessible inside the container
+      - ./data:/app/data
+
+  # -------------------------------------------------------------------
+  # 3. Processing Layer (Apache Spark Cluster)
+  # Big Data engine for distributed schema casting, cleansing, and aggregations.
+  # -------------------------------------------------------------------
+  spark_processing:
+    image: apache/spark:3.5.1
+    container_name: traffic_spark
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    environment:
+      SPARK_MODE: master
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: postgres_db
+    volumes:
+      # Mount the spark_job directory to provide access to PySpark scripts and JDBC drivers
+      - ./spark_job:/app
+
+volumes:
+  # Define persistent storage volume for PostgreSQL
+  postgres_data:
