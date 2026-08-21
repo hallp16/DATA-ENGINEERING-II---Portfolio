@@ -13,7 +13,7 @@ Batch data pipeline for processing Brazilian traffic accident data (~2 million r
 - **Processing:** Apache Spark (PySpark) – data cleaning and aggregation
 - **Reproducibility:** All Docker images use fixed versions (`python:3.9.18-slim`, `postgres:14.12`, `apache/spark:3.5.1`)
 
-<img width="8192" height="1714" alt="IaC Pipeline for Brazilian Traffic Data Phase II" src="https://github.com/user-attachments/assets/30ac1260-fb2a-4031-9fe7-0b50fb33385c" />
+<img width="100%" height="1714" alt="IaC Pipeline for Brazilian Traffic Data Phase II" src="https://github.com/user-attachments/assets/30ac1260-fb2a-4031-9fe7-0b50fb33385c" />
 
 
 ## Quick Start
