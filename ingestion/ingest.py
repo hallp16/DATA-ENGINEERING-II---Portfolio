@@ -13,7 +13,7 @@ def run_ingestion():
     # instead of hardcoding passwords directly in the script.
     # ---------------------------------------------------------
     db_user = os.getenv("DB_USER", "admin")
-    db_password = os.getenv("DB_PASSWORD", "masterpassword123")
+    db_password = os.getenv("DB_PASSWORD")
     db_host = os.getenv("DB_HOST", "postgres_db")
     db_name = os.getenv("DB_NAME", "traffic_db")
 
