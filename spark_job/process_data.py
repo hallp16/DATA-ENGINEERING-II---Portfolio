@@ -19,7 +19,7 @@ def run_spark_job():
 
     # Load connection details from environment variables
     db_user = os.environ.get("DB_USER", "admin")
-    db_password = os.environ.get("DB_PASSWORD", "masterpassword123")
+    db_password = os.environ.get("DB_PASSWORD", "mastersenha123")
     db_host = os.environ.get("DB_HOST", "postgres_db")
     db_name = os.environ.get("DB_NAME", "traffic_db")
     
