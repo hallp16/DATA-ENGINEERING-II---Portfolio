@@ -2,7 +2,7 @@
 
 Master's Portfolio Project – Data Engineering
 
-Batch data pipeline for processing Brazilian traffic accident data (~2M records).
+Batch data pipeline for processing Brazilian traffic accident data (~2 million records).
 
 ## Dataset
 - **Source:** [Kaggle – Brazilian Traffic Incidents (2007–2023)](https://www.kaggle.com/datasets/pedrogoncalv/brazilian-traffic-incidents-2007-to-2023)
@@ -13,7 +13,7 @@ Batch data pipeline for processing Brazilian traffic accident data (~2M records)
 - **Processing:** Apache Spark (PySpark) – data cleaning and aggregation
 - **Reproducibility:** All Docker images use fixed versions (`python:3.9.18-slim`, `postgres:14.12`, `apache/spark:3.5.1`)
 
-<img width="8192" height="1619" alt="IaC Pipeline for Brazilian Traffic Data" src="https://github.com/user-attachments/assets/c01fbf8b-0556-4d9f-b168-9b995f1f99db" />
+<img width="8192" height="1714" alt="IaC Pipeline for Brazilian Traffic Data Phase II" src="https://github.com/user-attachments/assets/30ac1260-fb2a-4031-9fe7-0b50fb33385c" />
 
 
 ## Quick Start
