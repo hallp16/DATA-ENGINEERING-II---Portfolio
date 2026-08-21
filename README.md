@@ -6,7 +6,7 @@ Batch data pipeline for processing Brazilian traffic accident data (~1.8M record
 - **Source:** [Kaggle – Brazilian Traffic Incidents (2007–2023)](https://www.kaggle.com/datasets/pedrogoncalv/brazilian-traffic-incidents-2007-to-2023)
 
 ## Architecture
-- *Ingestion:* Python (Pandas &SQLAlchemy) - chunked CSV streaming & idempotent batch loading into PostgreSQL
+- *Ingestion:* Python (Pandas & SQLAlchemy) - chunked CSV streaming & idempotent batch loading into PostgreSQL
 - *Storage:* PostgreSQL - stores raw data and analytics tables
 - *Processing:* Apache Spark (PySpark) - data cleaning and aggregation
 
