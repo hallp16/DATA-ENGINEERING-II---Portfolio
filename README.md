@@ -2,6 +2,9 @@
 
 Batch data pipeline for processing Brazilian traffic accident data (~1.8M records).
 
+## Dataset
+- **Source:** [Kaggle – Brazilian Traffic Incidents (2007–2023)](https://www.kaggle.com/datasets/pedrogoncalv/brazilian-traffic-incidents-2007-to-2023)
+
 ## Architecture
 - *Ingestion:* Python (Pandas) - loads raw CSV data into PostgreSQL
 - *Storage:* PostgreSQL - stores raw data and analytics tables
