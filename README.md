@@ -10,6 +10,9 @@ Batch data pipeline for processing Brazilian traffic accident data (~1.8M record
 - *Storage:* PostgreSQL - stores raw data and analytics tables
 - *Processing:* Apache Spark (PySpark) - data cleaning and aggregation
 
+<img width="8192" height="1619" alt="IaC Pipeline for Brazilian Traffic Data" src="https://github.com/user-attachments/assets/c01fbf8b-0556-4d9f-b168-9b995f1f99db" />
+
+
 ## Quick Start
 
 ```
