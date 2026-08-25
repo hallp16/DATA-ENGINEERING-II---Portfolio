@@ -6,35 +6,71 @@ Batch data pipeline for processing Brazilian traffic accident data (~2 million r
 
 ## Dataset
 - **Source:** [Kaggle – Brazilian Traffic Incidents (2007–2023)](https://www.kaggle.com/datasets/pedrogoncalv/brazilian-traffic-incidents-2007-to-2023)
+- **Files:** 17 annual CSV files (`Dados_PRF_2007.csv` to `Dados_PRF_2023.csv`)
 
 ## Architecture
-- **Ingestion:** Python (Pandas + SQLAlchemy) – chunked CSV reading with idempotent full-reload pattern (DROP + INSERT)
-- **Storage:** PostgreSQL – stores raw data and analytics tables
-- **Processing:** Apache Spark (PySpark) – data cleaning and aggregation
-- **Reproducibility:** All Docker images use fixed versions (`python:3.9.18-slim`, `postgres:14.12`, `apache/spark:3.5.1`)
+- **Data Preparation:** Python (Pandas) – automatic consolidation of 17 CSV files with Latin-1 encoding (runs inside the container on startup)
+- **Ingestion:** Python (Pandas + SQLAlchemy) – chunked CSV reading with idempotent full-reload pattern (`DROP` + batch `INSERT`)
+- **Storage:** PostgreSQL – stores raw data (`raw_traffic`) and analytics tables (`analytics_state_yearly`)
+- **Processing:** Apache Spark (PySpark) – schema casting, null-cleansing, and aggregations
+- **Reproducibility:** Pinned Docker base images (`python:3.9.18-slim`, `postgres:14.12`, `apache/spark:3.5.1`)
 
-<img width="100%" height="1714" alt="IaC Pipeline for Brazilian Traffic Data Phase II" src="https://github.com/user-attachments/assets/30ac1260-fb2a-4031-9fe7-0b50fb33385c" />
+## Architecture Diagram
 
+
+
+## Repository Structure
+
+```text
+DATA-ENGINEERING-II---Portfolio/
+├── data/                              # Raw Kaggle CSV files (git-ignored)
+│   └── Dados_PRF_*.csv                # 17 annual CSV files (2007-2023)
+├── ingestion/                         # Data consolidation & ingestion service
+│   ├── Dockerfile                     # Python 3.9.18-slim container definition
+│   ├── ingest.py                      # Batch ingestion worker (Pandas + SQLAlchemy)
+│   ├── data_preparation.py            # Merges 17 CSV files into one dataset
+│   └── requirements.txt               # Python dependencies
+├── spark_job/                         # PySpark transformation & aggregation
+│   ├── process_data.py                # Data cleaning, null-filtering & Gold-layer aggregation
+│   └── postgresql-42.7.13.jar         # PostgreSQL JDBC driver
+├── .env.example                       # Template for database environment variables
+├── .gitignore                         # Excludes .env, *.csv, and Python cache
+├── docker-compose.yml                 # Multi-container orchestration (PostgreSQL, Ingestion, Spark)
+└── README.md                          # Project documentation
+
+``` 
 
 ## Quick Start
-
-```
-bash
-# 1. Setup environment
+### 1. Environment Setup 
+```bash
+# Copy environment configuration
 cp .env.example .env
+```
 
-# 2. Start database & ingestion
+### 2. Prepare Data
+```bash
+# Place the 17 downloaded Kaggle CSV files (Dados_PRF_*.csv) inside the data/ folder.
+# The ingestion container will automatically consolidate and format them on startup.
+```
+
+### 3. Start Storage & Ingestion
+```bash
+# Build and run PostgreSQL and the automated Ingestion service
 docker-compose up --build -d
+```
 
-# 3. Run Spark transformation
+### 4. Run Spark Processing
+```bash
+# Execute PySpark batch transformation (Silver & Gold Layer)
 docker-compose run -u root --rm spark_processing /opt/spark/bin/spark-submit --packages org.postgresql:postgresql:42.7.13 /app/process_data.py
 ```
 
-## Results
-- *2,013,757 records processed*
-- *Analytics table:* analytics_state_yearly (accidents, deaths, injuries per state/year)
+### 5. Verify Analytics Results
+```bash
+docker-compose exec postgres_db psql -U admin -d traffic_db -c "SELECT * FROM analytics_state_yearly ORDER BY total_accidents DESC LIMIT 10;"
+```
 
-## Repository Structure
-- *ingestion/* - Python ingestion service  (Pandas + SQLAlchemy)
-- *spark_job/* - PySpark processing script
-- *docker-compose.yml* - Container orchestration
+## Results
+- **2,013,757** raw records ingested; rows with invalid or missing timestamps were filtered during Silver-layer cleansing prior to aggregation.
+- **Analytics table:** analytics_state_yearly (aggregations of accidents, fatalities, and injuries grouped by state and year).
+

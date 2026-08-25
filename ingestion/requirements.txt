@@ -11,5 +11,3 @@ sqlalchemy>=2.0.0
 # Low-level PostgreSQL driver for Python / SQLAlchemy
 psycopg2-binary>=2.9.0
 
-# Reads configuration from environment variables (.env)
-python-dotenv>=1.0.0
