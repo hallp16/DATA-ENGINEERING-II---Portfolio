@@ -17,6 +17,7 @@ Batch data pipeline for processing Brazilian traffic accident data (~2 million r
 
 ## Architecture Diagram
 
+<img width="8192" height="1343" alt="IaC Pipeline for Brazilian-correction" src="https://github.com/user-attachments/assets/f6307cb8-5e08-40c7-81b4-8e649e6bac10" />
 
 
 ## Repository Structure
