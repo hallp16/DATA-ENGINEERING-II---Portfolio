@@ -32,8 +32,7 @@ DATA-ENGINEERING-II---Portfolio/
 │   ├── data_preparation.py            # Merges 17 CSV files into one dataset
 │   └── requirements.txt               # Python dependencies
 ├── spark_job/                         # PySpark transformation & aggregation
-│   ├── process_data.py                # Data cleaning, null-filtering & Gold-layer aggregation
-│   └── postgresql-42.7.13.jar         # PostgreSQL JDBC driver
+│   └── process_data.py                # Data cleaning, null-filtering & Gold-layer aggregation
 ├── .env.example                       # Template for database environment variables
 ├── .gitignore                         # Excludes .env, *.csv, and Python cache
 ├── docker-compose.yml                 # Multi-container orchestration (PostgreSQL, Ingestion, Spark)
