@@ -60,6 +60,11 @@ mkdir -p data
 ```bash
 # Build and run PostgreSQL and the automated Ingestion service
 docker-compose up --build -d
+
+# Follow container logs to observe automated CSV consolidation and batch ingestion progress.
+# Loads ~2 million records in PostgreSQL, may take some minutes, please wait completion.
+docker logs -f traffic_ingestion
+
 ```
 
 ### 4. Run Spark Processing

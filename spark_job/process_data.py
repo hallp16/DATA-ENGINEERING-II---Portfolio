@@ -3,21 +3,17 @@ import logging
 from pyspark.sql import SparkSession
 import pyspark.sql.functions as F
 
-# Setup logging output
+# setup logs output
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 
 def run_spark_job():
     logging.info("Starting Apache Spark transformation job...")
-
-    # ---------------------------------------------------------
-    # 1. Initialize Spark Session
-    # Using PySpark to demonstrate horizontal scalability for large datasets.
-    # ---------------------------------------------------------
+       
     spark = SparkSession.builder \
         .appName("BrazilianTrafficAnalytics") \
         .getOrCreate()
 
-    # Load connection details from environment variables
+    # load credentials from env
     db_user = os.environ.get("DB_USER", "admin")
     db_password = os.environ.get("DB_PASSWORD")
     db_host = os.environ.get("DB_HOST", "postgres_db")
@@ -28,34 +24,23 @@ def run_spark_job():
         "user": db_user,
         "password": db_password,
         "driver": "org.postgresql.Driver"
-    }
-
-    # ---------------------------------------------------------
-    # 2. EXTRACT (Bronze Layer)
-    # Read the raw text data directly from the PostgreSQL database via JDBC
-    # ---------------------------------------------------------
+    }    
+   
     logging.info("Reading raw text data from PostgreSQL table 'raw_traffic'...")
     df_raw = spark.read.jdbc(url=jdbc_url, table="raw_traffic", properties=connection_properties)
 
-    # ---------------------------------------------------------
-    # 3. TRANSFORM (Silver Layer - Data Cleansing & Schema Casting)
-    # Convert string columns into real analytical types (Dates, Integers)
-    # and filter out invalid/corrupted records.
-    # ---------------------------------------------------------
+    # conversion of str column to adequate types;
+    #rows without a valid date are dropped, as this is part of the cleaning process   
+    
     logging.info("Applying schema casting and cleansing rules...")
     
     df_clean = df_raw.withColumn("data_inversa", F.to_date(F.col("data_inversa"), "yyyy-MM-dd")) \
                      .withColumn("mortos", F.col("mortos").cast("integer")) \
-                     .withColumn("feridos", F.col("feridos").cast("integer"))
-                     
-    # Safety filter: remove rows without a valid parsed date
-    df_clean = df_clean.filter(F.col("data_inversa").isNotNull())
-
-    # ---------------------------------------------------------
-    # 4. BUSINESS LOGIC & AGGREGATION (Gold Layer)
-    # Business Question: How many accidents, fatalities, and injuries 
-    # occurred per state (UF) and per year?
-    # ---------------------------------------------------------
+                     .withColumn("feridos", F.col("feridos").cast("integer"))           
+   
+    df_clean = df_clean.filter(F.col("data_inversa").isNotNull())  
+    # usecase: how many accidents, deaths, and injuries per state and year?
+   
     logging.info("Computing business aggregations (Accidents & Casualties by State/Year)...")
     
     df_analytics = df_clean.withColumn("year", F.year(F.col("data_inversa"))) \
@@ -65,11 +50,9 @@ def run_spark_job():
                                F.sum("mortos").alias("total_deaths"),
                                F.sum("feridos").alias("total_injuries")
                            )
-
-    # ---------------------------------------------------------
-    # 5. LOAD (Gold Layer Export)
-    # Write the high-value analytics table back into PostgreSQL for BI dashboards
-    # ---------------------------------------------------------
+    
+    # Write the analytics table back to PostgreSQL
+    
     logging.info("Writing final Gold table 'analytics_state_yearly' to PostgreSQL...")
     df_analytics.write.jdbc(
         url=jdbc_url, 

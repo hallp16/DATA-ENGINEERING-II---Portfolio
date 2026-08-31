@@ -3,15 +3,12 @@ import logging
 import pandas as pd
 from sqlalchemy import create_engine, text
 
-# Setup basic logging to see container progress in the terminal
+# log function to see the progress on terminal
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 
 def run_ingestion():
-    # ---------------------------------------------------------
-    # 1. Configuration & Security
-    # Read database credentials from environment variables (.env)
-    # instead of hardcoding passwords directly in the script.
-    # ---------------------------------------------------------
+            
+    # read credentials from env    
     db_user = os.getenv("DB_USER", "admin")
     db_password = os.getenv("DB_PASSWORD")
     db_host = os.getenv("DB_HOST", "postgres_db")
@@ -21,13 +18,10 @@ def run_ingestion():
     engine = create_engine(db_url)
 
     csv_path = "/app/data/brazilian_traffic.csv"
-    logging.info("Starting batch ingestion process into PostgreSQL...")
-
-    # ---------------------------------------------------------
-    # 2. Idempotency Pattern
-    # Drop the table before loading if it already exists.
-    # This prevents accidental row duplication if the container restarts.
-    # ---------------------------------------------------------
+    logging.info("Starting batch ingestion process into PostgreSQL...")    
+    
+    # always fresh start; ensures idempotency 
+   
     try:
         with engine.connect() as conn:
             conn.execute(text("DROP TABLE IF EXISTS raw_traffic;"))
@@ -35,18 +29,14 @@ def run_ingestion():
             logging.info("Clean slate: Dropped old 'raw_traffic' table if it existed.")
     except Exception as e:
         logging.warning(f"Could not drop existing table: {e}")
-
-    # ---------------------------------------------------------
-    # 3. Memory-Safe Chunking & ELT Loading
-    # - chunksize=10000: Loads data in small batches to protect RAM (prevents OOM crashes)
-    # - decimal=",": Converts Brazilian decimal commas into international dots
-    # - dtype=str: Critical Data Engineering fix! Loads all raw columns as text (Bronze layer).
-    #   This avoids crashes when a column contains unexpected text values (e.g. 'SPRF-MG').
-    # ---------------------------------------------------------
+   
+    # load data in smaller batches to avoid memory issues        
+   
     chunk_size = 10000
     total_rows = 0
 
     try:
+         # load all columns as text first to avoid type errors; bronze layer approach
         for chunk in pd.read_csv(
             csv_path, 
             encoding="utf-8", 

@@ -1,13 +1,3 @@
-# ---------------------------------------------------------------------
-# Python Dependencies for Ingestion Microservice
-# ---------------------------------------------------------------------
-
-# Fast data manipulation and memory-efficient chunk reading
 pandas>=2.0.0
-
-# Database abstraction layer and connection engine for PostgreSQL
 sqlalchemy>=2.0.0
-
-# Low-level PostgreSQL driver for Python / SQLAlchemy
 psycopg2-binary>=2.9.0
-
