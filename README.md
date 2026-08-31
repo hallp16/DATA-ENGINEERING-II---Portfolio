@@ -50,6 +50,9 @@ cp .env.example .env
 
 ### 2. Prepare Data
 ```bash
+# Create the data folder if it doesn't exist
+mkdir -p data
+
 # Place the 17 downloaded Kaggle CSV files (Dados_PRF_*.csv) inside the data/ folder.
 # The ingestion container will automatically consolidate and format them on startup.
 ```
