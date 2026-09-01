@@ -20,6 +20,7 @@ Batch data pipeline for processing Brazilian traffic accident data (~2 million r
 <img width="8192" height="1343" alt="IaC Pipeline for Brazilian" src="https://github.com/user-attachments/assets/f6307cb8-5e08-40c7-81b4-8e649e6bac10" />
 
 
+
 ## Repository Structure
 
 ```text
@@ -31,6 +32,8 @@ DATA-ENGINEERING-II---Portfolio/
 │   ├── ingest.py                      # Batch ingestion worker (Pandas + SQLAlchemy)
 │   ├── data_preparation.py            # Merges 17 CSV files into one dataset
 │   └── requirements.txt               # Python dependencies
+├── init_db/                           # DB init scripts
+│   └──roles.sql                      # Creates read-only ml_reader role
 ├── spark_job/                         # PySpark transformation & aggregation
 │   └── process_data.py                # Data cleaning, null-filtering & Gold-layer aggregation
 ├── .env.example                       # Template for database environment variables
@@ -75,6 +78,7 @@ docker-compose run -u root --rm spark_processing /opt/spark/bin/spark-submit --p
 
 ### 5. Verify Analytics Results
 ```bash
+# Default credentials from .env.example; adjust if you changed DB_USER/DB_NAME in your .env
 docker-compose exec postgres_db psql -U admin -d traffic_db -c "SELECT * FROM analytics_state_yearly ORDER BY total_accidents DESC LIMIT 10;"
 ```
 

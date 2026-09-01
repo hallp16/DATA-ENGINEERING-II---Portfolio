@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 import pandas as pd
 from sqlalchemy import create_engine, text
@@ -53,8 +54,10 @@ def run_ingestion():
 
     except FileNotFoundError:
         logging.error(f"Error: The dataset '{csv_path}' was not found in the container volume!")
+        sys.exit(1)
     except Exception as e:
         logging.error(f"Ingestion failed with error: {str(e)}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     run_ingestion()
