@@ -40,8 +40,7 @@ def run_ingestion():
         for chunk in pd.read_csv(
             csv_path, 
             encoding="utf-8", 
-            sep=";", 
-            decimal=",", 
+            sep=";",             
             dtype=str, 
             chunksize=chunk_size
         ):
