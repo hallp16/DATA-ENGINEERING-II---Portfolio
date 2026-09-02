@@ -32,7 +32,7 @@ DATA-ENGINEERING-II---Portfolio/
 │   ├── data_preparation.py            # Merges 17 CSV files into one dataset
 │   └── requirements.txt               # Python dependencies
 ├── init_db/                           # DB init scripts
-│   └──roles.sql                      # Creates read-only ml_reader role
+│   └──roles.sql                       # Creates read-only ml_reader role
 ├── spark_job/                         # PySpark transformation & aggregation
 │   └── process_data.py                # Data cleaning, null-filtering & Gold-layer aggregation
 ├── .env.example                       # Template for database environment variables
